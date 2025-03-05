@@ -60,31 +60,43 @@
         </ul>
     </footer>
     <script>
-        let qr = new QRCode(document.getElementById("qrcode"), {
-            text: "WIFI:S:;T:nopass;;",
-            width: 200,
-            height: 200
-        });
-        function escapeText(text) {
-            return text.replace(/([;:\",])/g, '\\$1');
-        }
-        function updateQRCode() {
-            let ssid = escapeText(document.getElementById("txtSSID").value.trim());
-            let password = escapeText(document.getElementById("txtPassword").value.trim());
-            let encryption = document.querySelector("input[name='encryption']:checked")?.value || "nopass";
-            if (encryption.toLowerCase() === "none") {
-                encryption = "nopass";
-                password = "";
-            }
-            let qrText = (encryption === "nopass")
-                ? `WIFI:S:${ssid};T:${encryption};;`
-                : `WIFI:S:${ssid};T:${encryption};P:${password};;`;
-            qr.clear();
-            qr.makeCode(qrText);
-        }
-        document.getElementById("txtSSID").addEventListener("input", updateQRCode);
-        document.getElementById("txtPassword").addEventListener("input", updateQRCode);
-        document.querySelectorAll("input[name='encryption']").forEach(el => el.addEventListener("change", updateQRCode));
+       let qr = new QRCode(document.getElementById("qrcode"), {
+    text: "WIFI:T:nopass;S:;;",
+    width: 200,
+    height: 200
+});
+
+function escapeText(text) {
+    return text.replace(/([\\;,":])/g, '\\$1');
+}
+
+function updateQRCode() {
+    let ssid = escapeText(document.getElementById("txtSSID").value.trim());
+    let password = escapeText(document.getElementById("txtPassword").value.trim());
+    let encryption = document.querySelector("input[name='encryption']:checked")?.value || "nopass";
+
+    if (!ssid) {  // Ensure SSID is not empty
+        qr.clear();
+        return;
+    }
+
+    if (encryption.toLowerCase() === "none") {
+        encryption = "nopass";
+        password = "";
+    }
+
+    let qrText = (encryption === "nopass")
+        ? `WIFI:T:${encryption};S:${ssid};;`
+        : `WIFI:T:${encryption};S:${ssid};P:${password};;`;
+
+    qr.clear();
+    qr.makeCode(qrText);
+}
+
+document.getElementById("txtSSID").addEventListener("input", updateQRCode);
+document.getElementById("txtPassword").addEventListener("input", updateQRCode);
+document.querySelectorAll("input[name='encryption']").forEach(el => el.addEventListener("change", updateQRCode));
+
         function printWiFiCard() {
             let wifiCard = document.querySelector(".wifi-card");
             if (!wifiCard) {
