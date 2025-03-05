@@ -60,7 +60,7 @@
         </ul>
     </footer>
     <script>
-       let qr = new QRCode(document.getElementById("qrcode"), {
+        let qr = new QRCode(document.getElementById("qrcode"), {
     text: "WIFI:T:nopass;S:;;",
     width: 200,
     height: 200
@@ -88,6 +88,8 @@ function updateQRCode() {
     let qrText = (encryption === "nopass")
         ? `WIFI:T:${encryption};S:${ssid};;`
         : `WIFI:T:${encryption};S:${ssid};P:${password};;`;
+
+    console.log("Generated QR Code Text:", qrText); // DEBUGGING
 
     qr.clear();
     qr.makeCode(qrText);
