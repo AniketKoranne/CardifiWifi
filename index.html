@@ -89,7 +89,7 @@ function updateQRCode() {
         ? `WIFI:T:${encryption};S:${ssid};;`
         : `WIFI:T:${encryption};S:${ssid};P:${password};;`;
 
-    console.log("Generated QR Code Text:", qrText); // DEBUGGING
+    //console.log("Generated QR Code Text:", qrText); // DEBUGGING
 
     qr.clear();
     qr.makeCode(qrText);
