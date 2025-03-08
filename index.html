@@ -88,5 +88,84 @@
         document.getElementById("txtPassword").addEventListener("input", updateQRCode);
         document.getElementById("rbEncryption").addEventListener("change", updateQRCode);
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+    function downloadQRCode() {
+        let wifiCard = document.querySelector(".wifi-card"); // Select the entire WiFi card
+
+        if (!wifiCard) {
+            alert("WiFi Card not found! Please enter network details.");
+            return;
+        }
+
+        html2canvas(wifiCard, { scale: 2, backgroundColor: null }).then(canvas => {
+            let link = document.createElement("a");
+            link.href = canvas.toDataURL("image/png");
+            link.download = "wifi_card.png";
+            link.click();
+        });
+    }
+
+    function printWiFiCard() {
+        let wifiCard = document.querySelector(".wifi-card"); // Select the WiFi card
+
+        if (!wifiCard) {
+            alert("WiFi Card not found! Please enter network details.");
+            return;
+        }
+
+        let copies = prompt("Enter number of copies to print:", "1"); // Ask user for copies
+        copies = parseInt(copies, 10); // Convert input to integer
+
+        if (isNaN(copies) || copies <= 0) {
+            alert("Invalid number of copies!");
+            return;
+        }
+
+        let printWindow = window.open("", "_blank");
+        printWindow.document.write(`
+        <html>
+        <head>
+            <title>Print WiFi Cards</title>
+            <link rel="stylesheet" href="CSS/style.css"> <!-- Ensure styles apply -->
+            <style>
+                body { margin: 0; padding: 0; }
+                .page { 
+                    display: grid; 
+                    grid-template-columns: repeat(2, 1fr); /* 2 cards per row */
+                    grid-template-rows: repeat(2, auto); /* 2 rows per page */
+                    gap: 20px; /* Space between cards */
+                    width: 100%;
+                    page-break-after: always; /* Forces new page after 4 cards */
+                }
+                .wifi-card {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px;
+                    border: 1px solid #ccc;
+                    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+                    width: 90%;
+                    margin: auto;
+                }
+            </style>
+        </head>
+        <body onload="window.print(); window.close();">
+    `);
+
+        // Generate multiple copies of the WiFi card in groups of 4 per page
+        for (let i = 0; i < copies; i++) {
+            if (i % 4 === 0) printWindow.document.write(`<div class="page">`); // Start a new page every 4 cards
+            printWindow.document.write(wifiCard.outerHTML);
+            if ((i + 1) % 4 === 0 || i === copies - 1) printWindow.document.write(`</div>`); // Close page after 4 cards or last card
+        }
+
+        printWindow.document.write(`</body></html>`);
+        printWindow.document.close();
+    }
+</script>
+
 </body>
 </html>
