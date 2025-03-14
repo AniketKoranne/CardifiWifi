@@ -165,6 +165,13 @@ footer {
     footer h1 {
         flex: 3;
     }
+@media (max-width: 768px) {
+  /* Adjustments for tablet and smaller screens */
+}
+
+@media (max-width: 480px) {
+  /* Adjustments for mobile screens */
+}
 
 @media screen and (max-width: 1200px) {
     html {
